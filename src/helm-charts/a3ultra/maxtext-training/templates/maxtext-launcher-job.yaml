@@ -316,6 +316,10 @@ spec:
 
           python MaxText/train.py MaxText/configs/base.yml "${OPTIONS[@]}" \
           base_output_directory=gs://${GCS_BUCKET}/maxtext \
+          dataset_path=gs://${GCS_BUCKET}/data \
+          dataset_name=c4/en:3.0.7 \
+          eval_dataset_name=c4/en:3.0.9 \
+          load_parameters_path=gs://${GCS_BUCKET}/checkpoint \
           run_name=${JOB_IDENTIFIER} \
           steps={{ $root.Values.workload.steps }}
 
