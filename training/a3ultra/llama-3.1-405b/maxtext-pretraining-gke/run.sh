@@ -25,6 +25,5 @@ helm install -f values.yaml \
     --set workload.run_name=$WORKLOAD_NAME \
     --set workload.gpus=512 \
     --set queue=$KUEUE_NAME \
-    --set volumes.gcsMounts[0].bucketName=${GCS_BUCKET} \
     $WORKLOAD_NAME \
     $REPO_ROOT/src/helm-charts/a3ultra/maxtext-training

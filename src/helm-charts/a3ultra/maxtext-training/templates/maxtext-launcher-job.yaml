@@ -320,7 +320,7 @@ spec:
           echo ${OPTIONS[@]}
           echo "================================="
 
-          python -u MaxText/train.py MaxText/configs/base.yml "${OPTIONS[@]}" \
+          python MaxText/train.py MaxText/configs/base.yml "${OPTIONS[@]}" \
           base_output_directory=gs://${GCS_BUCKET}/maxtext \
           dataset_name=c4/en:3.0.7 \
           eval_dataset_name=c4/en:3.0.9 \

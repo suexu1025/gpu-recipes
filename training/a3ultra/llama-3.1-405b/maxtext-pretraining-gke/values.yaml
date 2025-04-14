@@ -20,7 +20,7 @@ volumes:
   ssdMountPath: "/ssd"
 
   gcsMounts:
-  - bucketName: "qinwen-mlperf-gpu"  # The training data bucket
+  - bucketName: "cmcs-benchmark-logs"  # The training data bucket /reginal bucget
     mountPath: "/gcs"
   pvcMounts:
   - name: "qinwen-training-bucket-pvc"
