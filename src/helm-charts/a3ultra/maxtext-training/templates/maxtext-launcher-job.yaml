@@ -48,9 +48,9 @@ spec:
         kubectl.kubernetes.io/default-container: workload
         {{- if $root.Values.volumes.gcsMounts }}
         gke-gcsfuse/volumes: "true"
-        gke-gcsfuse/cpu-limit: "0"
-        gke-gcsfuse/memory-limit: "0"
-        gke-gcsfuse/ephemeral-storage-limit: "0"
+        gke-gcsfuse/cpu-limit: "500m"
+        gke-gcsfuse/memory-limit: "350Gi"
+        gke-gcsfuse/ephemeral-storage-limit: "40Gi"
         {{- end}}
         {{- if not $root.Values.network.hostNetwork }}
         networking.gke.io/default-interface: "eth0"
@@ -122,7 +122,7 @@ spec:
       {{- range $pvc := $root.Values.volumes.pvcMounts }}
       - name: "{{ $pvc.name }}"
         persistentVolumeClaim:
-          claimName: "{{ $pvc.name }}-pvc"
+          claimName: "{{ $pvc.name }}"
       {{- end }}
 
       {{- range $gcs := $root.Values.volumes.gcsMounts }}
@@ -161,6 +161,10 @@ spec:
         volumeMounts:
         - name: local-ssd
           mountPath: "{{ $root.Values.volumes.ssdMountPath }}"
+        {{- range $pvc := $root.Values.volumes.pvcMounts }}
+        - name: "{{ $pvc.name }}"
+          mountPath: "{{ $pvc.mountPath }}"
+        {{- end }}
         {{- range $gcs := $root.Values.volumes.gcsMounts }}
         - name: "{{ $gcs.bucketName }}"
           mountPath: "{{ $gcs.mountPath }}"
@@ -185,6 +189,8 @@ spec:
       {{ end }}
 
       containers:
+      - name: gke-gcsfuse-sidecar
+        image: gcr.io/gcs-tess/gcs-fuse-csi-driver-sidecar-mounter:mirvine-1.12.1-rc1
       - name: workload
         image: "{{ $root.Values.workload.image }}"
         imagePullPolicy: Always
@@ -220,7 +226,7 @@ spec:
         - name: TF_CPP_MAX_LOG_LEVEL
           value: "100"
         - name: XLA_PYTHON_CLIENT_MEM_FRACTION
-          value: "0.98"
+          value: "0.92"
         - name: CUDA_DEVICE_MAX_CONNECTIONS
           value: "1"
         - name: NVTE_FUSED_ATTN
@@ -314,12 +320,10 @@ spec:
           echo ${OPTIONS[@]}
           echo "================================="
 
-          python MaxText/train.py MaxText/configs/base.yml "${OPTIONS[@]}" \
+          python -u MaxText/train.py MaxText/configs/base.yml "${OPTIONS[@]}" \
           base_output_directory=gs://${GCS_BUCKET}/maxtext \
-          dataset_path=gs://${GCS_BUCKET}/data \
           dataset_name=c4/en:3.0.7 \
           eval_dataset_name=c4/en:3.0.9 \
-          load_parameters_path=gs://${GCS_BUCKET}/checkpoint \
           run_name=${JOB_IDENTIFIER} \
           steps={{ $root.Values.workload.steps }}
 
@@ -338,10 +342,16 @@ spec:
             mountPath: /dev/shm
           - name: local-ssd
             mountPath: "{{ $root.Values.volumes.ssdMountPath }}"
+          {{- range $pvc := $root.Values.volumes.pvcMounts }}
+          - name: "{{ $pvc.name }}"
+            mountPath: "{{ $pvc.mountPath }}"
+          {{- end }}
           {{- range $gcs := $root.Values.volumes.gcsMounts }}
           - name: "{{ $gcs.bucketName }}"
             mountPath: "{{ $gcs.mountPath }}"
           {{- end }}
         resources:
           limits:
+            cpu: 0
+            memory: 0
             nvidia.com/gpu: {{ $gpusPerNode }}
