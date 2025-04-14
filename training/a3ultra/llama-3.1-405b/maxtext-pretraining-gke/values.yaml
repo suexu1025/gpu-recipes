@@ -23,11 +23,11 @@ volumes:
   - bucketName: "qinwen-mlperf-gpu"  # The training data bucket
     mountPath: "/gcs"
   pvcMounts:
-  - name: "amaloo-training-bucket-pvc"
+  - name: "qinwen-training-bucket-pvc"
     mountPath: "/gcs-pvc"
-  - name: "amaloo-ckpt-bucket-pvc"
+  - name: "qinwen-ckpt-bucket-pvc"
     mountPath: "/ckpt-pvc"
-  - name: "amaloo-gcs-logs-bucket-pvc"
+  - name: "qinwen-gcs-logs-bucket-pvc"
     mountPath: "/logs"
 
 workload:
