@@ -16,7 +16,7 @@ EXP=llama-3-1-405b-maxtext-mlperf-${TIMESTAMP}
 WORKLOAD_NAME=${USER}-${EXP}
 
 export GCS_BUCKET=qinwen-mlperf-gpu
-export ARTIFACT_REGISTRY=gcr.io/supercomputer-testing/us-west1-docker.pkg.dev/supercomputer-testing/qinwen/qinwen_gpu_runner-0320
+export ARTIFACT_REGISTRY=gcr.io/supercomputer-testing/us-west1-docker.pkg.dev/supercomputer-testing/qinwen/qinwen_gpu_runner-0322
 export KUEUE_NAME=a3-ultra
 
 helm install -f values.yaml \

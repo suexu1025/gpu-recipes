@@ -11,7 +11,7 @@ dataset_type: c4_mlperf
 dataset_path: /gcs-pvc/qinwen/data
 adam_eps: 1e-5
 enable_checkpointing: True
-load_parameters_path: /ckpt-pv/qinwen/checkpoint 
+load_parameters_path: /ckpt-pvc/qinwen/checkpoint 
 attention: cudnn_flash_te
 remat_policy: full
 use_iota_embed: true
