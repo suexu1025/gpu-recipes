@@ -1,6 +1,6 @@
 hardware: gpu
-dcn_data_parallelism: 4
-dcn_fsdp_parallelism: 56
+dcn_data_parallelism: 7
+dcn_fsdp_parallelism: 32
 ici_fsdp_parallelism: 8
 per_device_batch_size: 2
 max_target_length: 8192
@@ -11,7 +11,8 @@ tokenizer_path: /workspace/assets/mistral/tokenizer
 dataset_type: c4_mlperf
 dataset_path: /gcs-pvc/qinwen/data
 adam_eps: 1e-5
-enable_checkpointing: False
+enable_checkpointing: True
+load_parameters_path: /ckpt-pvc/qinwen/checkpoint 
 attention: cudnn_flash_te
 remat_policy: full
 use_iota_embed: true
@@ -24,3 +25,4 @@ enable_metric_writing: true
 target_eval_loss: 5.6
 profiler: xplane
 steps: 350
+data_shuffle_seed: 5780
